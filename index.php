@@ -39,7 +39,7 @@ function getFilmMakerByName ($name)
     require ".const.php";
     try {
         $dbh = new PDO('mysql:host=' . $dbhost . ';dbname=' . $dbname, $user, $pass);
-        $query = "SELECT * FROM filmmakers WHERE name='$name'";
+        $query = "SELECT * FROM filmmakers WHERE lastname='$name'";
         $statement = $dbh->prepare($query);//prepare query
         $statement->execute();//execute query
         $queryResult = $statement->fetch();//prepare result for client
@@ -59,8 +59,8 @@ function updateFilmMaker($filmMaker)
 // ############################## Tests unitaires ####################
 
 // Recharger la base de données pour être sûr à 100% des données de test
-
-$cmd = "mysql -u root -proot < Restore-MCU-PO-Final.sql";
+require ".const.php";
+$cmd = "mysql -u $user -p$pass < Restore-MCU-PO-Final.sql";
 exec($cmd);
 
 
@@ -75,6 +75,7 @@ else
     echo 'BUG !!!';
 }
 echo "\n";
+
 echo "Test unitaire de la fonction getItem : ";
 $item = getFilmMaker(3);
 if ($item['firstname'] == 'Luc-Olivier')
