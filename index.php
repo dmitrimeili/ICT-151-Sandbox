@@ -2,13 +2,13 @@
 
 function getAllFilmMakers()
 {
-    require ".const.php";
+    $dbh = callPDO();
     try {
-        $dbh = new PDO('mysql:host=' . $dbhost . ';dbname=' . $dbname, $user, $pass);
+
         $query = 'SELECT * FROM filmmakers';
         $statement = $dbh->prepare($query);//prepare query
         $statement->execute();//execute query
-        $queryResult = $statement->fetchAll();//prepare result for client
+        $queryResult = $statement->fetchAll(PDO::FETCH_ASSOC);//prepare result for client
         $dbh = null;
         return $queryResult;
     } catch (PDOException $e) {
@@ -19,13 +19,13 @@ function getAllFilmMakers()
 
 function getFilmMaker($id)
 {
-    require ".const.php";
+    $dbh = callPDO();
     try {
-        $dbh = new PDO('mysql:host=' . $dbhost . ';dbname=' . $dbname, $user, $pass);
+
         $query = "SELECT * FROM filmmakers WHERE id=$id";
         $statment = $dbh->prepare($query);//prepare query
         $statment->execute();//execute query
-        $queryResult = $statment->fetch();//prepare result for client
+        $queryResult = $statment->fetch(PDO::FETCH_ASSOC);//prepare result for client
         $dbh = null;
         return $queryResult;
     } catch (PDOException $e) {
@@ -34,15 +34,15 @@ function getFilmMaker($id)
     }
 }
 
-function getFilmMakerByName ($name)
+function getFilmMakerByName($name)
 {
-    require ".const.php";
+    $dbh = callPDO();
     try {
-        $dbh = new PDO('mysql:host=' . $dbhost . ';dbname=' . $dbname, $user, $pass);
+
         $query = "SELECT * FROM filmmakers WHERE lastname='$name'";
         $statement = $dbh->prepare($query);//prepare query
         $statement->execute();//execute query
-        $queryResult = $statement->fetch();//prepare result for client
+        $queryResult = $statement->fetch(PDO::FETCH_ASSOC);//prepare result for client
         $dbh = null;
         return $queryResult;
     } catch (PDOException $e) {
@@ -53,14 +53,42 @@ function getFilmMakerByName ($name)
 
 function updateFilmMaker($filmMaker)
 {
-}
+    $dbh = callPDO();
+    try {
 
+        $query = "UPDATE filmakers SET
+                          filmmakersnumber=:filmmakersnumber,
+                            firstname =:firstname,
+                            lastname=:lastname,
+                            birthname=:birthname,
+                            nationality=:nationality
+                            WHERE id =:id";
+        var_dump($filmMaker);
+        $statement = $dbh->prepare($query);//prepare query
+        $statement->execute($filmMaker);//execute query
+        $queryResult = $statement->fetch(PDO::FETCH_ASSOC);//prepare result for client
+        $dbh = null;
+        var_dump($queryResult);
+        return $queryResult;
+
+    }catch(PDOException $e){
+        print "Error!: " . $e->getMessage() . "<br/>";
+        return null;
+    }
+
+}
+function callPDO(){
+    require ".const.php";
+    $dbh = new PDO('mysql:host=' . $dbhost . ';dbname=' . $dbname, $user, $pass);
+    return $dbh;
+
+}
 
 // ############################## Tests unitaires ####################
 
 // Recharger la base de données pour être sûr à 100% des données de test
 require ".const.php";
-$cmd = "mysql -u $user -p$pass < Restore-MCU-PO-Final.sql";
+$cmd = "mysql - u $user - p$pass < Restore - MCU - PO -Final.sql";
 exec($cmd);
 
 
